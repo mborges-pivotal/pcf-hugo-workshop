@@ -3,11 +3,13 @@ Categories = ["lab"]
 Tags = ["spring","circuit-breaker","cloudfoundry"]
 date = "2016-04-15T11:28:20-04:00"
 title = "Lab 5: Spring Cloud Circuit Breaker"
-weight = 4
+weight = 5
 +++
 
 ### Goal
 In this workshop, you will learn how to apply the circuit breaker pattern in your Spring boot apps.
+
+&nbsp;
 
 <!--more-->
 

@@ -12,6 +12,9 @@ weight = 4
 
 To create a Spring boot application using Spring Cloud Registry Server and deploy it on the Cloud Foundry Platform.
 
+&nbsp;
+
+
 <!--more-->
 
 ### Introduction

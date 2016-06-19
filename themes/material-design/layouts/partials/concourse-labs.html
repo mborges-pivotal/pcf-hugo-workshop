@@ -1,9 +1,9 @@
 {{ $baseurl := .Site.BaseURL }}
 <div class="col s6">
-  <div class="card-panel hoverable blue lighten-1">
+  <div class="card-panel hoverable blue-grey darken-1">
       <div class="card-content white-text">
   <!-- Card Content -->
-      <h4><a href="{{ .Permalink }}"><span  class="amber-text darken-4">{{ .Title }}</span></a></span></h4>
+      <h4><a href="{{ .Permalink }}">{{ .Title }}</a></span></h4>
       <p>{{ .Summary }}</p>
       <p>
       {{if .Params.tags }}

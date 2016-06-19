@@ -2,7 +2,7 @@
 Categories = ["agenda","workshop"]
 Tags = ["logistics","speakers"]
 date = "2016-03-15T16:23:23+09:00"
-title = "Welcome to the Pivotal Cloud Foundry Workshop@GM Austin"
+title = "Welcome to Pivotal Cloud Native Workshop @ HEB San Antonio"
 type = "Introduction"
 weight = 1
 +++
@@ -11,9 +11,9 @@ weight = 1
 Corvette 2nd Floor Austin
 
 ##### Date and Time
-Date: **April 26 , 2016**
+Date: **June 22 , 2016**
 
-Time: **9:30AM—4:30PM**
+Time: **9:00AM—1:00PM**
 
 Click to get the Agenda, Prerequisites and Setup for the workshop.
 
@@ -80,7 +80,6 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 ##### Speakers
 
-    Rajesh Jain, Platform Architect
     Marcelo Borges, Platform Architect
     Edward Mikuszewski, Platform Architect
 

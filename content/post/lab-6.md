@@ -3,7 +3,7 @@ Categories = ["lab"]
 Tags = ["concourse","cloudfoundry"]
 date = "2016-03-15T14:54:22-04:00"
 title = "Lab 6: Build Pipelines using Concourse.ci"
-weight = 3
+weight = 5
 +++
 
 
