@@ -1,461 +1,249 @@
 +++
 Categories = ["lab"]
-Tags = ["spring","config-server","cloudfoundry"]
-date = "2016-04-11T23:37:14-04:00"
-title = "Lab 3: Spring Cloud Config Server"
-weight = 3
+Tags = ["concourse","cloudfoundry"]
+date = "2016-03-15T14:54:22-04:00"
+title = "Lab 3: Build Pipelines using Concourse.ci"
+weight = 5
 +++
 
 
 ### Goal
-
-To create a Spring boot application using Spring Cloud Config Server to store and fetch configuration information and deploy it on the Pivotal Cloud Foundry Platform.
-
+In this workshop, you will learn how to Build Pipelines to for unit testing, staging and production deployment to Cloud Foundry using Concourse.ci
 
 <!--more-->
 
 ### Introduction
 
-Spring Cloud provides tools for developers to quickly build some of the common patterns in distributed systems (e.g. configuration management, service discovery, circuit breakers, intelligent routing, micro-proxy, control bus, one-time tokens, global locks, leadership election, distributed sessions, cluster state). Coordination of distributed systems leads to boiler plate patterns, and using Spring Cloud developers can quickly stand up services and applications that implement those patterns. They will work well in any distributed environment, including the developer’s own laptop, bare metal data centers, and managed platforms such as Cloud Foundry.
+Concourse's end goal is to provide an expressive CI system with as few distinct moving parts as possible.
 
-The big picture : Use Spring Cloud Services design patterns to build cloud Native applications
+Concourse CI decouples your project from your CI's details, and keeping all configuration in declarative files that can be checked into version control.
 
-<img src="/images/spring-1.png" alt="Cloud Native Spring Application Architecture" style="width: 100%;"/>
+<img src="/images/concourse-1.png" alt="Concourse CI" style="width: 100%;"/>
 
+Concourse limits itself to three core concepts: tasks, resources, and the jobs that compose them. Interesting features like timed triggers and synchronizing usage of external environments are modeled in terms of these, rather than as layers on top.
 
+With these primitives you can model any pipeline, from simple (unit → integration → deploy → ship) to complex (testing on multiple infrastructures, fanning out and in, etc.).
 
 Prerequisites
 --
 
 1. Java SDK 1.7+
 
-2. Git from [github.com](https://mac.github.com/)
+2. Pivotal CF Env or Pivotal Web Services Account.  Create a free trial account here [Pivotal Web Services](http://run.pivotal.io/)
 
-3. Cloud Foundry CLI for [Mac](https://github.com/cloudfoundry/cli/releases) or [Windows](http://docs.cloudfoundry.org/devguide/installcf/install-go-cli.html#windows)
+3. Vagrant (https://vagrantup.com/) to run Concourse locally
 
-4. Curl from [curl](http://curl.haxx.se/)
+4. Fly cli. The fly tool is a command line interface to Concourse, it available when you bring up Concourse
 
-5. Pivotal Web Services Account.  Create a free trial account here [Pivotal Web Services](http://run.pivotal.io/)
-
-6. Maven for build (https://maven.apache.org/install.html)
 
 
 Steps
 --
-In this workshop we are going to follow these steps to build our first Cloud Native Spring Boot app on Cloud foundry using the Spring Cloud Config Server.
+In this workshop we are going to follow these steps to use the circuit-breaker in a Cloud Native Spring Boot app on Cloud foundry using the Spring Cloud Circuit Breaker Service.
 
 
 Learn how to
 
-    - Set up a Git repository to hold configuration data
-    - Configure Spring Cloud Config server (config-server) on Pivotal Cloud Foundry with a Git backend
-    - Set up a client (greeting-config) to pull configuration from the config-server
-    - Use @ConfigurationProperties to capture configuration changes (greeting-config)
-    - Use @RefreshScope to capture configuration changes (greeting-config)
-    - Use Cloud Bus to notify applications (greeting-config) to refresh configuration at scale
-    - Config a Spring Cloud Service Registry
-
-Desired the architecture of this Cloud Native Spring boot app is:
-
-<img src="/images/spring-2.png" alt="Config Server with Cloud Native Spring App" style="width: 100%;"/>
+    - Start and Configure Concourse.CI server
+    - Create a Pipeline
+    - Trigger a Pipeline using Fly
+    - Run a pipeline to test, stage and deploy on Cloud Foundry
 
 
-* * *
+***
+
+## Part 1: Building simple Pipelines
 
 ### Step 1
-##### Get the greeting-config app
+##### Configure your Concourse.CI server
 
-Clone the git repo which has a simple boilerplate Spring boot app built using Spring Initializer.
+Download the Concourse CI server and boot up using vagrant. This step will take some time, you can do this prior to the start of the workshop presentation.
 
-The Spring Labs repo contains multiple apps, we are going to focus on greeting-config app in this exercise.
-
+````bash
+$mkdir ciworkshop && cd ciworkshop // ci workshop working directory
+$vagrant init concourse/lite # creates ./Vagrantfile
+$vagrant up                  # downloads the box and spins up the VM
 ````
-git clone https://github.com/rjain-pivotal/pcf-workshop-spring-labs.git
+The web server will be running at http://192.168.100.4:8080
+
+Open up the Concourse UI web page, you don't have any pipelines configured. But you can download the fly cli from here. At the right hand bottom, use the links to download the **fly cli**.
+
+If you're on Linux or OS X, you will have to `chmod +x` the downloaded binary and put it in your $PATH
+
+Next, lets target and login to the Concourse server
+
+````bash
+$ fly -t lite login -c http://192.168.100.4:8080
 ````
 
 
 ### Step 2
-##### Login into Pivotal Cloud Foundry
+##### Create your first pipeline
 
-The students have userId's (student1-student25) and the passwords will be distributed in the workshop.
-Each student is assigned their own Organization (student1-org)
+We have an existing project `flight-school` in a git repo, which we can clone and use for our first pipeline.
 
 ````
-cf login -a https://api.pcf2.cloud.fe.pivotal.io --skip-ssl-validation
-  Email: student1
-  Password: ••••••••
+$git clone https://github.com/rjain-pivotal/flight-school.git
+$cd flight-school\ci
+
 ````
 
-Login to the App Console at https://apps.pcf2.cloud.fe.pivotal.io
+In the ci folder there is a properties file, flight-school-properties-sample.yml
 
-<img src="/images/pcf-console.png" alt="PCF App Console" style="width: 100%;"/>
+This contains the cf and git specific configuration which is read by the pipeline.
+
+Make a local copy of the flight-school-properties-sample.yml
+
+
+````
+mkdir ~/.concourse
+cp ci/flight-school-properties-sample.yml ~/.concourse/flight-school-properties.yml
+chmod 600 ~/.concourse/flight-school-properties.yml
+````
+
+Now edit the ~/.concourse/flight-school-properties.yml
+
+````
+github-uri: https://github.com/.../flight-school.git
+github-branch: master
+cf-api: https://api.local.micropcf.io
+cf-username: admin
+cf-password: admin
+cf-org: micropcf-org
+cf-space: micropcf-space
+cf-manifest-host: pcfdemo-ci
+
+````
+
+Review your pipeline file in the ci folder\pipeline.yml
+
+````
+resources:
+- name: flight-school
+  type: git
+  source:
+      uri: {{github-uri}}
+      branch: {{github-branch}}
+- name: staging-app
+  type: cf
+  source:
+      api: {{cf-api}}
+      username: {{cf-username}}
+      password: {{cf-password}}
+      organization: {{cf-org}}
+      space: {{cf-space}}
+      skip_cert_check: true
+
+jobs:
+- name: test-app
+  plan:
+  - get: flight-school
+    trigger: true
+  - task: tests
+    file: flight-school/ci/tasks/build.yml
+  - put: staging-app
+    params:
+      manifest: flight-school/manifest.yml
+
+````
+
+This pipeline has two resources and a single job. The resource `flight-school` is the `git` repo and the resource `staging-app` is the `cloud-foundry` space to stage the app.
+
+The single job in the pipeline `test-app` gets the source code from git on any commits to the repo, and triggers the task defined in the `build.yml`. Next, on completion of this task, it puts the output artifact in to the staging-app resource using the manifest file defined for `cf push`
+
+Edit the manifest file to reflect your app name
+
+````
+name: <student-id>-flight-school
+memory: 128M
+random-route: true
+path: .
+
+````
 
 
 ### Step 3
-##### Set the config data
+##### Set the Pipeline using Fly
 
-The greeting-config app uses the Spring Cloud Services Config Server to read config data.
 
-Fork the repo (http://www.github.com/rjain-pivotal/workshop-app-config)
+Now you have your pipeline defined, it is ready to be uploaded to the CI Server.
 
-<img src="/images/config-server-fork.png" alt="Fork" style="width: 100%;"/>
-
-You can make changes to the application config files in the forked repo at http://github.com/your-github-account/workshop-app-config
-
-In case you want to make local changes and commit to the repo, then clone the git repo which has the config properties which are read by the greeting-config
-
-````bash
-$git clone https://github.com/your-github-account/workshop-app-config.git
-$cd workshop-app-config/
-````
-
-In this repo you have the following config files:
-
-<img src="/images/git-1.png" alt="Git Config Server Files" style="width: 200px;"/>
-
-The config server serves the configuration request using the following path formats, where the application name is set in the application.yml for the client application, profile and label are set as environment variables.
 
 ````
-/{application}/{profile}[/{label}]
-/{application}-{profile}.yml
-/{label}/{application}-{profile}.yml
-/{application}-{profile}.properties
-/{label}/{application}-{profile}.Properties
+$fly -t lite set-pipeline -p flight-school -c ci/pipeline.yml -l ~/.concourse/flight-school-properties.yml
 ````
-For more details on the Config Server config files refer to the documentation (http://docs.pivotal.io/spring-cloud-services/config-server/server.html)
 
-You could also have multiple branches in your Git repo, and in the Config Service instance, you can configure which branch to read the config information.
-
-````
-master
-------
-https://github.com/myorg/configurations
-|- myapp.yml
-|- myapp-development.yml
-|- myapp-production.yml
-
-tag v1.0.0
-----------
-https://github.com/myorg/configurations
-|- myapp.yml
-|- myapp-development.yml
-|- myapp-production.yml
-
-````
 
 ### Step 4
-##### Configure the Spring Cloud Config Service Instance from the marketplace
+##### Trigger the Pipeline and stage the app
 
-1. In the PCF App Console, create a instance of the Config Server service from the marketplace.
-
-<img src="/images/pcf-console-1.png" alt="Marketplace Services" style="width: 100%;"/>
-
-2. Select the default plan.
-3. Name the service instance as 'studentXX-config-service'
-
-<img src="/images/pcf-config-service-1.png" alt="Config Server" style="width: 100%;"/>
-
-4. This will create the studentXX-config-service service instance. Next configure this service by clicking manage.
-
-<img src="/images/pcf-config-service-2.png" alt="Config Server" style="width: 100%;"/>
-
-The Git repository URL is the URL of your cloned git repo in Step 3.
-
+Test the tasks manually before you run the whole Pipelines
 ````
-https://github.com/rjain-pivotal//student1-workshop-app-config.git
+fly -t lite execute -c ci/tasks/build.yml
 ````
 
-We are using defaults for the rest, hence leave them blank.
-For detailed documentation on the other configuration items, refer to the product documentation.
-http://docs.pivotal.io/spring-cloud-services/config-server/creating-an-instance.html
 
+````
+fly -t lite trigger-job --job flight-school/test-app
+````
+
+
+<img src="/images/concourse-2.png" alt="Concourse CI" style="width: 100%;"/>
+
+
+## Part 2: Running a real world pipeline
 
 ### Step 5
+##### Configure a multi step pipeline
 
-##### Code walk through (greeting-config)
+1. Clone the git repo which has a sample app PCFDemo with a real world pipeline.
 
-Let's walk through the code in the greeting-config app in the source repo (Step #1) using your favorite editor (Atom/Sublime/Eclipse/IntelliJ/STS)
+    ````
+    https://github.com/rjain-pivotal/PCF-demo
+    ````
 
-1. greeting-service
+2. Make sure you have an S3 bucket configured to save your artifacts and the IAM user credentials to access the bucket.
 
-      In GreetingProperties.java, @ConfigurationProperties annotation allows for reading of configuration values. Configuration keys are a combination of the prefix and the field names. In this case, there is one field (displayFortune). Therefore greeting.displayFortune is used to turn the display of fortunes on/off. Remaining code is typical getter/setters for the fields.
+3. Configure the properties files and assign it to the pipeline
 
-      ````
-      @ConfigurationProperties(prefix="greeting")
-      public class GreetingProperties {
+    Copy the pcfdemo-properties-sample.yml to your ~/.concourse/pcfdemo-properties.yml
+    Change the cf properties, github properties and s3 properties.
 
-      	private boolean displayFortune;
+    ````
+    github-uri: https://github.com/<github-user>/PCF-demo.git
+    github-branch: master
+    s3-access-key-id: SAMPLEDF99FSWEBF9DW9  # AWS or S3 compatible access key id
+    s3-secret-access-key: sampleaxfdpiA98FG8u7ahd08Sdgf8AFG8gh8S0F  # AWS or S3 compatible secret access key
+    s3-endpoint: s3.amazonaws.com
+    s3-bucket-version: pcfdemo-releases
+    s3-bucket-releases: pcfdemo-releases
+    s3-bucket-release-candidates: pcfdemo-release-candidates
+    maven-opts: # -Xms256m -Xmx512m
+    maven-config: # -s path/to/settings.xml
+    cf-api: https://api.local.micropcf.io
+    cf-username: admin
+    cf-password: admin
+    cf-org: micropcf-org
+    cf-space: micropcf-space
+    cf-manifest-host: pcfdemo-ci
+    ````
 
-      	public boolean isDisplayFortune() {
-      		return displayFortune;
-      	}
 
-      	public void setDisplayFortune(boolean displayFortune) {
-      		this.displayFortune = displayFortune;
-      	}
-      }
-      ````
 
-      greetingProperties.isDisplayFortune() is used to turn the display of fortunes on/off. There are times when you want to turn features on/off on demand.
+4. Set the pipeline
 
-      ````
-      @EnableConfigurationProperties(GreetingProperties.class)
-      public class GreetingController {
 
-      	Logger logger = LoggerFactory
-      			.getLogger(GreetingController.class);
+    ````
+    fly -t lite set-pipeline -p pcfdemo -c ci/pipeline.yml -l ~/.concourse/pcfdemo-properties.yml
+    ````
 
+5. Trigger the pipeline
 
-      	@Autowired
-      	GreetingProperties greetingProperties;
 
-      	@Autowired
-      	FortuneService fortuneService;
+    ````
+    fly -t lite trigger-job --job pcfdemo/unit-test
+    ````
 
-      	@RequestMapping("/")
-      	String getGreeting(Model model){
 
-      		logger.debug("Adding greeting");
-      		model.addAttribute("msg", "Greetings!!!");
 
-      		if(greetingProperties.isDisplayFortune()){
-      			logger.debug("Adding fortune");
-      			model.addAttribute("fortune", fortuneService.getFortune());
-      		}
-
-      		//resolves to the greeting.vm velocity template
-      		return "greeting";
-      	}
-
-      }
-      ````
-
-2. quote-service
-
-      QuoteService uses the @RefreshScope annotation. Beans with the @RefreshScope annotation will be recreated when refreshing configuration. The @Value annotation allows for injecting the value of the quoteServiceURL configuration parameter.
-
-      ````
-      @Service
-      @RefreshScope
-      public class QuoteService {
-      	Logger logger = LoggerFactory
-      			.getLogger(QuoteController.class);
-
-      	@Value("${quoteServiceURL}")
-      	private String quoteServiceURL;
-
-      	public String getQuoteServiceURI() {
-      		return quoteServiceURL;
-      	}
-
-      	public Quote getQuote(){
-      		logger.info("quoteServiceURL: {}", quoteServiceURL);
-      		RestTemplate restTemplate = new RestTemplate();
-      		Quote quote = restTemplate.getForObject(
-      				quoteServiceURL, Quote.class);
-      		return quote;
-      	}
-      }
-      ````
-
-3. greeting-config.yml
-
-      In the app-config repo in the Github, review the greeting-config.yml file, which has the displayFortune turned on and the quoteService point to an existing URL.
-
-      ````
-      security:
-        basic:
-          enabled: false
-
-      management:
-        security:
-          enabled: false
-
-      logging:
-        level:
-          io:
-            pivotal: DEBUG
-
-      greeting:
-        displayFortune: true # <----Change to true
-
-      quoteServiceURL: http://quote-service-dev.cfapps.io/quote
-      ````
-
-
-### Step 6
-##### Push the app
-
-1. Change the manifest.yml file in the greeting-config/ to reflect the name of the app and the config-service
-
-        ---
-        applications:
-        - name: <studentXXX>-greeting-config
-          memory: 512M
-          buildpack: https://github.com/cloudfoundry/java-buildpack
-          instances: 1
-          host: <studentXXX>-greeting-config
-          path: target/greeting-config-0.0.1-SNAPSHOT.jar
-          services:
-            - <studentXXX>-config-service
-          env:
-            SPRING_PROFILES_ACTIVE: dev
-
-
-2. Build the app using maven
-
-      ````
-      mvn clean package
-      ````
-
-3. Push the app using cf cli
-
-      ````
-      cf push
-      ````
-
-4. Open in the browser the App
-
-      ````
-      http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/
-      http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/random-quote
-      ````
-
-### Step 7
-##### Change the property and curl to RefreshScope
-
-1. In the app-config repo, edit the greeting-config.yml file.
-
-      ````
-      greeting:
-        displayFortune: false # <----Change to true
-
-      quoteServiceURL: http://quote-service-qa.cfapps.io/quote
-      ````
-
-2. Force refresh the beans
-
-      ````
-      curl -X POST http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/refresh
-      ````
-
-      This will output the properties which changed
-      ````
-      ["quoteServiceURL","greeting.displayFortune"]
-      ````
-
-3. Open in the browser the App
-
-      You will see the Greetings doesn't have any fortune and the random-quote is from qa service
-
-        http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/
-        http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/random-quote
-
-
-### Step 8
-##### Change the profile and Push
-
-1. Next, update the manifest.yml to point to the SPRING_PROFILES_ACTIVE to qa
-
-        ---
-        applications:
-        - name: <studentXXX>-greeting-config
-          memory: 512M
-          buildpack: https://github.com/cloudfoundry/java-buildpack
-          instances: 1
-          host: <studentXXX>-greeting-config
-          path: target/greeting-config-0.0.1-SNAPSHOT.jar
-          services:
-            - <studentXXX>-config-service
-          env:
-            SPRING_PROFILES_ACTIVE: qa
-
-2. Push the app using cf cli
-
-      ````
-      cf push
-      ````
-
-
-3. Now the properties will be served by app-config/greeting-config-qa.yml
-
-      You can verify by opening the two URLs
-
-        http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/
-        http://student1-greeting-config.pcf2.cloud.fe.pivotal.io/random-quote
-
-
-### Step 9
-##### Refreshing Application Configuration at Scale with Cloud Bus
-
-When running several instances of your application, this poses several problems:
-
-1. Refreshing each individual instance is time consuming and too much overhead
-2. When running on Cloud Foundry you don’t have control over which instances you hit when sending the POST request due to load balancing provided by the router
-
-Spring Cloud Bus addresses the issues listed above by providing a single endpoint to refresh all application instances via a pub/sub notification.
-
-1. Create a RabbitMQ service instance, bind it to greeting-config
-
-      ````
-      $ cf create-service p-rabbitmq standard cloud-bus
-      $ cf bind-service <studentXXX>-greeting-config cloud-bus
-      ````
-
-2. Add the dependency to the pom.xml
-
-      ````
-      <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-bus-amqp</artifactId>
-      </dependency>
-      ````
-
-3. Build the app and push 3 app instances
-
-      ````
-      $mvn clean package
-      $cf push -i 3
-      ````
-
-4. Change the app-config/greeting-config.yml and refresh all the app instances using Cloud Bus
-
-      ````
-      curl -X POST http://<studentXXX>-greeting-config.pcf2.cloud.fe.pivotal.io/bus/refresh
-      ````
-
-5. Verify by opening the two URLs
-
-        http://<studentXXX>-greeting-config.pcf2.cloud.fe.pivotal.io/
-        http://<studentXXX>-greeting-config.pcf2.cloud.fe.pivotal.io/random-quote
-
-### Step 10
-##### Spring Actuator Endpoints
-
-Check the Actuator Endpoints
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/beans``
-
-Dumps all of the beans in the Spring context.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/autoconfig``
-
-Dumps all of the auto-configuration performed as part of application bootstrapping.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/configprops``
-
-Displays a collated list of all @ConfigurationProperties.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/env``
-
-Dumps the application’s shell environment as well as all Java system properties.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/mappings``
-
-Dumps all URI request mappings and the controller methods to which they are mapped.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/dump``
-
-Performs a thread dump.
-
-``http://<studentXX>-greeting-config.pcf2.cloud.fe.pivotal.io/trace``
+<img src="/images/concourse-3.png" alt="Concourse CI" style="width: 100%;"/>

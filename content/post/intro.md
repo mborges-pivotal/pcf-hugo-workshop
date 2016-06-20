@@ -8,7 +8,7 @@ weight = 1
 +++
 ##### Location
 
-Corvette 2nd Floor Austin
+HEB Offices (TBD: Get details)
 
 ##### Date and Time
 Date: **June 22 , 2016**
@@ -23,36 +23,30 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
         Broad Agenda (We will have breaks in between sessions)
 
-        9:30 - 10:30: GM's Current and Desired Model of Software Delivery (3 Use Cases) -- Mano and GM Team
+        9:00 - 9:45: Overview of Cloud Native Architecture
 
-        10:30 - 11:30: Pivotal (and VMWare)'s approach to GM's desired state (Fulfilment of Use Cases)- Pivotal
+        9:45 - 10:30: Introduction to Pivotal Cloud Foundry
 
-        == LUNCH ==
+        10:30 - 10:45 == Break - Check Lab Access ==
 
-        12:30 - 2:00: Walkthrough (and Hands on)  Push/Bind/Scale/Blue Green Deployment of Spring boot apps provided by Pivotal Cloud Foundry hosted by Pivotal
+        10:45 - 12:00: Hands on Experience with Pivotal Cloud Foundry (push, bind, scale, monitor) - Lab1
 
-        2:00 - 3:00: Build Pipelines for continuous deployment, Bosh/Ops Manager walk through and discussion on CI/CD.
+        12:00 - 12:30: Lunch and Demo of Lab2 and Lab3
 
-        3:30 - 4:30: Lessons learned and Scoping for POC - Apps, Infrastructure vSphere, Sizing, Timelines and Project Plan
+        12:30 - 13:00: Wrap Up, Q&A, Feedback
 
-        4:30 and beyond : Open discussion on various topics - Spring Cloud Services, Security, APM, K8, Docker
-                          Wrap Up, Q&A, Feedback
+        == Labs available - do it at your own pace ==
 
 
 ##### Prerequisites
-1. Java SDK 1.7+
+1. Sign-up for Pivotal Web Services
 
-2. Git CLI from [github.com](https://mac.github.com/)
+2. Go to [Pivotal Web Services - PWS](http://run.pivotal.io/) and click on ‘sign-up’. You’ll need an e-mail address and mobile number.
 
-3. Cloud Foundry CLI for [Mac](https://github.com/cloudfoundry/cli/releases) or [Windows](http://docs.cloudfoundry.org/devguide/installcf/install-go-cli.html#windows)
+3. Download the Cloud Foundry CLI at [PWS Tools](https://console.run.pivotal.io/tools)
 
-4. Curl from [curl](http://curl.haxx.se/)
+4. Download workshop files [here](/files/workshop-files.zip)
 
-5. Use Workshop PCF Env or Pivotal Web Services Account.  Create a free trial account here [Pivotal Web Services](http://run.pivotal.io/)
-
-6. Maven for build (https://maven.apache.org/install.html)
-
-7. Vagrant (In case you want to run Concourse CI/CD using Vagrant)
 
 ##### Setup
 
@@ -60,23 +54,11 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 2. Check if you are able to use the cf cli to connect to the PCF Workshop Env. Alternatively, you can create a PWS account and check the firewall/connectivity before the Workshop
 
-          cf login -a https://api.pcf2.cloud.fe.pivotal.io  --skip-ssl-validation
+          cf login -a https://api.run.pivotal.io 
 
-3. Check if you are able to connect to Git repo and download / clone the repo using CLI
-4. Login to the App Manager Console at
+3. Login to the App Manager Console at
 
-        https://apps.pcf2.cloud.fe.pivotal.io
-
-5. Note: Tiles preinstalled in the PCF Workshop environment which we will be using the workshop. You don't need any setup for these tiles.
-
-          ER
-          Spring Cloud Services
-          RabbitMQ
-          MySQL
-          MongoDB
-          Neo4J
-          Redis
-
+        https://apps.run.pivotal.io
 
 ##### Speakers
 

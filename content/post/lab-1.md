@@ -19,17 +19,9 @@ To deploy and configure a microservice and UI, leverage the platform for monitor
 Prerequisites
 --
 
-1. Java SDK 1.7+
+1. Access to Pivotal Cloud Foundry Environment
 
-2. Git from [github.com](https://mac.github.com/)
-
-3. Cloud Foundry CLI for [Mac](https://github.com/cloudfoundry/cli/releases) or [Windows](http://docs.cloudfoundry.org/devguide/installcf/install-go-cli.html#windows)
-
-4. Curl from [curl](http://curl.haxx.se/)
-
-5. Use Workshop PCF Env or Pivotal Web Services Account.  Create a free trial account here [Pivotal Web Services](http://run.pivotal.io/)
-
-6. Maven for build (https://maven.apache.org/install.html)
+2. Application binaries
 
 
 
@@ -52,45 +44,25 @@ __NOTE__
 
 ### Step 1
 ##### Get the cities app
-1. Fork and Clone [PCF Workspace](https://github.com/Pivotal-Field-Engineering/pcf-workspace-devops/)
-2. Review the [cities](https://github.com/Pivotal-Field-Engineering/pcf-workspace-devops/tree/master) application.
-
+1. Extract the application binaries and cd into its folder
 
 ### Step 2
-##### Build the app
-By this point, you should have cloned (or forked, or downloaded) the [workspace repo](https://github.com/Pivotal-Field-Engineering/pcf-workspace-devops/).  Now you will build the project and deploy it to Cloud Foundry.
-
-For Linux/Mac:
-```bash
-
-cd pcf-workspace-devops
-./gradlew clean build
-
-```
-
-Windows:
-```bash
-cd pcf-workspace-devops
-gradlew.bat clean build
-```
-### Step 3
 ##### Login into Pivotal Cloud Foundry
 
 The students have userId's (student1-student25) and the passwords will be distributed in the workshop.
 Each student is assigned an userId within their own organization (student1-org). Please refer to the handout you have been given.
 
 ````
-cf login -a https://api.pcf2.cloud.fe.pivotal.io --skip-ssl-validation
+cf login -a https://api.run.pivotal.io
   Email: student1
   Password: ••••••••
 ````
 
-Login to the App Console at https://apps.pcf2.cloud.fe.pivotal.io
+Login to the App Console at https://apps.run.pivotal.io
 
 <img src="/images/pcf-console.png" alt="PCF App Console" style="width: 100%;"/>
 
-
-### Step 4
+### Step 3
 ##### Push the app
 
 
@@ -114,7 +86,7 @@ Login to the App Console at https://apps.pcf2.cloud.fe.pivotal.io
 
 3. If you haven't already it is a good time to walk through the AppsManager:
 
-        https://apps.pcf2.cloud.fe.pivotal.io
+        https://apps.run.pivotal.io
 
 ##### Recap: Part 1
 
@@ -134,7 +106,7 @@ Login to the App Console at https://apps.pcf2.cloud.fe.pivotal.io
 
 The cities-service app requires a database service to store and fetch cities info.
 
-### Step 5
+### Step 4
 ##### Create a Database from Marketplace
 
 1. Review the docs on Services:
@@ -143,20 +115,20 @@ The cities-service app requires a database service to store and fetch cities inf
 
 2. Create a mysql service, name it as `<YOUR INITIALS>-cities-db`
 
-    You can create the service from the `cli` or launch the App Manager-> Select the Development Space [https://apps.pcf2.cloud.fe.pivotal.io](https://apps.pcf2.cloud.fe.pivotal.io) and login.
+    You can create the service from the `cli` or launch the App Manager-> Select the Development Space [https://apps.run.pivotal.io](https://apps.run.pivotal.io) and login.
 
     Navigate to the marketplace and see the available services. Here you will create the service using the CLI.
   ````bash
     $ cf marketplace // check if mysql service is available
-    $ cf create-service p-mysql 100mb-dev <studentXX>-cities-db
+    $ cf cf create-service cleardb spark <studentXX>-cities-db
   ````
 
 3. Launch the DB console via the `Manage` link in the App Manager.  Note the database is empty.
 
-### Step 6
+### Step 5
 ##### Push the App
 
-1. Do a cf push on cities-service. Notice that the push will fail. In the next step you can learn why.
+1. Do a cf push on cities-service. **NOTICE THAT THE PUSH WILL FAIL.** In the next step you can learn why.
 
     ````bash
     $ cd ../cities-service
@@ -171,7 +143,7 @@ The cities-service app requires a database service to store and fetch cities inf
     <img src="/images/pcf-console-log.png" alt="Logs for the App" style="width: 100%;"/>
 
 
-### Step 7
+### Step 6
 ##### Manually Binding the Service Instance
 
 1. Review the docs on [Binding a Service Instance](http://docs.pivotal.io/pivotalcf/devguide/services/bind-service.html)
@@ -182,7 +154,7 @@ The cities-service app requires a database service to store and fetch cities inf
     $ cf bind-service <studentXX>-cities-service <studentXX>-cities-db
     ````
 
-3. Restart your cities-service application to inject the new database.
+3. Restart your cities-service application to inject the new database. Notice the CF CLI may suggest you restage the application, but this is not required in this case.
 
     ````bash
     $ cf restart <studentXX>-cities-service
@@ -209,7 +181,7 @@ __NOTE__
 
 <br>
 
-### Step 8
+### Step 7
 ##### Binding Services via the Manifest
 
 Next, lets push the cities-service app with a manifest to help automate deployment.
@@ -244,10 +216,10 @@ Next, lets push the cities-service app with a manifest to help automate deployme
     ````bash
        // This will list your apps and the last column is the route.
        $cf apps
-          url: cities-hello-postpericardial-nonsubtlety.pcf2.cloud.fe.pivotal.io  
-          $ curl -i http://cities-hello-postpericardial-nonsubtlety.pcf2.cloud.fe.pivotal.io
+          url: student1-cities-service.cfapps.io  
+          $ curl -i http://student1-cities-service.cfapps.io
     ````
-    We must be able to access your application at  http://cities-hello-postpericardial-nonsubtlety.pcf2.cloud.fe.pivotal.io for the next steps to work properly.
+    We must be able to access your application at  http://student1-cities-service.cfapps.io for the next steps to work properly.
 
 __NOTE__
 
@@ -255,7 +227,7 @@ __NOTE__
 In this exercise we have used a different naming convention.
 
 <br>
-### Step 9
+### Step 8
 ##### Health, logging & events via the CLI
 
 Learning about how your application is performing is critical to help you diagnose and troubleshoot potential issues. Cloud Foundry gives you options for viewing the logs.
@@ -268,7 +240,7 @@ To tail the logs of your application perform this command:
 
 Notice that nothing is showing because there isn't' any activity. Use the following curl command to see the application working:
   ````bash
-  $ curl -i http://<studentXX>-cities-service.pcf2.cloud.fe.pivotal.io/cities/
+  $ curl -i http://<studentXX>-cities-service.cfapps.io/cities/
   ````
 
 For other ways of viewing logs check out the documentation here: [Streaming Logs](http://docs.pivotal.io/pivotalcf/devguide/deploy-apps/streaming-logs.html#view)
@@ -301,7 +273,7 @@ You will get detailed output of the health
   ````
 
 <br>
-### Step 10
+### Step 9
 ##### Environment variables
 
 View the environment variable and explanation of [VCAP Env](http://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#view-env)
@@ -378,7 +350,7 @@ You will get the output similar to this on your terminal
   ````
 
 
-### Step 11
+### Step 10
 ##### Scaling apps
 
 Applications can be scaled via the command line or the console. When we talk about scale, there are two different types of scale: Vertical and Horizontal. Read [Scaling Apps](http://docs.cloudfoundry.org/devguide/deploy-apps/cf-scale.html) doc on more details on scaling applications.
@@ -409,21 +381,21 @@ To check the status of your applications you can check from the command line to 
 Once the second instance as started, scale the app back down to one instance.
 
 <br>
-### Step 12
+### Step 11
 ##### Verify the app from the Console
 
 To verify that the application is running, use the following curl commands to retrieve data from the service or use a browser to access the URL:
 
   ````bash
-  $ curl -i http://<studentXX>-cities-service.pcf2.cloud.fe.pivotal.io/cities
+  $ curl -i http://<studentXX>-cities-service.cfapps.io/cities
   ````
 
   ````bash
-  $ curl -i http://<studentXX>-cities-service.pcf2.cloud.fe.pivotal.io/cities/162
+  $ curl -i http://<studentXX>-cities-service.cfapps.io/cities/162
   ````
 
   ````bash
-  $ curl -i http://<studentXX>-cities-service.pcf2.cloud.fe.pivotal.io/cities?size=5
+  $ curl -i http://<studentXX>-cities-service.cfapps.io/cities?size=5
   ````
 <br>
 
@@ -447,19 +419,12 @@ The `cities-client` demonstrates using the [Spring Cloud Connector](http://cloud
 
 The goal of this exercise is to use what you have learned to deploy the `cities-ui` application.
 
-### Step 13
-##### Build the Cities UI and Cities Client App
-
-
-The cities-ui and cities-client can be both built at once by running `./gradlew assemble` in the parent directory. Run this command now.
-
-
-### Step 14
+### Step 12
 ##### Create a User Provided Service Instance.
 
 In this section we will create a backend microservice end point for cities-service.
 
-1. Review the documentation on link:http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html[User Provided Service Instances]
+1. Review the documentation on link: [User Provided Service Instances](http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html)
 2. Look for the details by running `cf cups --help`.
 
 3. You will need to specify the parameter citiesuri to the user defined service instance .
@@ -470,13 +435,13 @@ In this section we will create a backend microservice end point for cities-servi
 
   $ cf create-user-provided-service <studentXX>-cities-ws -p "citiesuri"
 
-  citiesuri>   http://<studentXX>-cities-service.pcf2.cloud.fe.pivotal.io/
+  citiesuri>   http://<studentXX>-cities-service.cfapps.io/
 
   Creating user provided service....
   ````
 
 <br>
-### Step 15
+### Step 13
 ##### Deploy cities-ui project
 
 
@@ -484,8 +449,8 @@ A `manifest.yml` is included in the cities-ui app.  Edit this manifest with your
 
 
   ````bash
-  $cd cities-ui
-  $nano manifest.yml (Or your favorite editor)
+  $ cd cities-ui
+  $ nano manifest.yml (Or your favorite editor)
 
   ---
   applications:
@@ -505,7 +470,7 @@ Push the `cities-ui` without specifying the manifest.yml. It will by default pic
 
 Note the URL once the application has been successfully pushed.
 
-### Step 16
+### Step 14
 ##### Verify the backend service is bound to cities-ui
 
 
@@ -558,7 +523,7 @@ User-Provided:
 SPRING_PROFILES_ACTIVE: cloud
 ````
 
-### Step 17
+### Step 15
 ##### Access the cities-ui to verify it is connected to your microservice.
 
 Open the App Manager (Console) and navigate to your apps. You will see the cities-ui app, with a link to launch the cities-ui application. Alternatively you can open up your browser and navigate to the URL listed from a successful cf push command.
@@ -581,71 +546,11 @@ In this part of the workshop we created a cities-ui app which is loosely bound a
 ## PART 4: Deploy Version 2 of the App
 
 
-In this section we are going to do a green-blue deployment using cf plugin `autopilot`. The same can be done by executing cf commands.
-
+##### THIS PART IS BEING UPDATED
 <br>
-### Step 18
-##### Delete the unversioned app and the route
 
-  ````bash
-  cf delete -r <studentXX>-cities-service
-  ````
-
-### Step 19
-##### Process of Blue Green Deployment
-
-  Review the CF Document for blue green deployment link:https://docs.pivotal.io/pivotalcf/devguide/deploy-apps/blue-green.html[Using Blue-Green Deployment to Reduce Downtime and Risk]
-
-  In summary Blue-green deployment is a release technique that reduces downtime and risk by running two identical production environments called Blue and Green.
-
-
-  <img src="/images/blue-green-process.png" alt="Blue Green Deployment Process" style="width: 100%;"/>
-
-
-Cloud Foundry plugin [Autopilot](https://github.com/concourse/autopilot) does blue green deployment, albeit it takes a different approach to other zero-downtime plugins. It does not perform any complex route re-mappings instead it leans on the manifest feature of the Cloud Foundry CLI. The method also has the advantage of treating a manifest as the source of truth and will converge the state of the system towards that. This makes the plugin ideal for continuous delivery environments.
-
-  ````bash
-
-  $ mkdir $HOME/go
-  $ export GOPATH=$HOME/go
-  $ export PATH=$PATH:$GOPATH/bin
-
-  $ go get github.com/concourse/autopilot
-  $ cf install-plugin $GOPATH/bin/autopilot
-  $ cd cities-service
-  // Append the build number to the app Name
-
-  $ cf zero-downtime-push <studentXX>-cities-service
-  ````
-
-If you would like to inject build numbers in your app names here is a script you could use to do blue green deployments in the cities-service directory
-
-    Usage: blue-green.sh <app-name> <build-number> <domain>
-
-
-  ````bash
-
-  $ ./blue-green.sh  cities-service 1001 pcf2.cloud.fe.pivotal.io
-  $ cf apps // You should see your app build 1001 and the Route
-  ````
-
-  Now push the new build 1002 of the app
-
-  ````bash
-  $ ./blue-green.sh  cities-service 1002 pcf2.cloud.fe.pivotal.io
-  $ cf apps // You should see your app build 1002 and the same route mapped to the new build
-
-  ````
-
-##### Discussion: Part 4
-
-In this part of the workshop did deployment using a blue green script without any downtime.
-This script / methodology can be used in your CD pipeline to build and deploy Cloud Native Apps with zero downtime.
-
-1. Discussion on how do you do Continous Deployment and Delivery with zero downtime today.
-
-
-##### Recap
+***
+### Recap
 
 In this workshop we saw how to build, deploy, bind, scale, monitor apps on Cloud foundry and manage the lifecycle of the application
 
