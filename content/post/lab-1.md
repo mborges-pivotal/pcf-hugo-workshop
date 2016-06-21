@@ -533,7 +533,6 @@ Open the App Manager (Console) and navigate to your apps. You will see the citie
 
 
 
-
 ##### Discussion: Part 3
 
 
@@ -546,7 +545,140 @@ In this part of the workshop we created a cities-ui app which is loosely bound a
 ## PART 4: Deploy Version 2 of the App
 
 
-##### THIS PART IS BEING UPDATED
+Prerequisites
+--
+
+The CF CLI includes an extensible plugin functionality. These plugins enable developer and operators customize the CF CLI to bring DevOps functionality specific to their processes. 
+
+You can find more information at [Using cf CLI Plugins](https://docs.run.pivotal.io/cf-cli/use-cli-plugins.html) 
+
+1 - Configure CF plugin repository
+
+ ````bash
+  $ cf add-plugin-repo Community https://plugins.cfapps.io/
+  ````
+Now ensure the plugin repo is registered
+
+ ````bash
+  -> cf list-plugin-repos
+  OK
+
+  Repo Name      URL
+  Community      https://plugins.cfapps.io/
+  ````
+
+2 - Install the Scaleover plugin
+
+ ````bash
+-> cf install-plugin -r Community Scaleover
+
+**Attention: Plugins are binaries written by potentially untrusted authors. Install and use plugins at your own risk.**
+
+Do you want to install the plugin Scaleover? (y or n)> y
+Looking up 'Scaleover' from repository 'Community'
+9914300 bytes downloaded...
+Installing plugin scaleover-plugin...
+OK
+Plugin scaleover v1.0.4 successfully installed.
+ ````
+
+3 - List plugins commands
+
+ ````bash
+ -> cf plugins
+Listing Installed Plugins...
+OK
+
+Plugin Name         Version   Command Name      Command Help
+scaleover           1.0.4     scaleover         Roll http traffic from one application to another
+````
+ 
+### Step 16
+##### Deploy cities-ui Version 2 project
+
+A `manifest-v2.yml` is included in the cities-ui app.  Edit this manifest with your initials and add the service binding to your cities-service
+
+
+  ````bash
+  $ cd cities-ui
+  $ nano manifest-v2.yml (Or your favorite editor)
+
+  ---
+  applications:
+  - name: <YOUR INITIALS>-cities-ui
+    memory: 512M
+    instances: 1
+    path: build/libs/cities-ui-v2.jar
+    services: [ <YOUR INITIALS>-cities-ws ]
+    env:
+      SPRING_PROFILES_ACTIVE: cloud
+  ````
+
+Push the `cities-ui` without specifying the manifest.yml. It will by default pick the manifest.yml file and deploy the app.
+
+  ````bash
+  $ cf push -f manifest-v2.yml
+  ````
+
+Note the URL once the application has been successfully pushed. Now we' running "Post Codes V2". Notice we're binding multiple routes (hosts) to the V2 application in the manifest-v2.yml. That means that traffic will be routed between both version of the application on their shared route. 
+
+Check the application in your space and note the urls for cities-ui versions
+
+````bash
+-> cf apps
+Getting apps in org SoCal / space HEB as mborges@pivotal.io...
+OK
+
+name                      requested state   instances   memory   disk   urls
+student1-cities-ui        started           1/1         512M     1G     student1-cities-ui.cfapps.io
+student1-cities-ui-v2     started           1/1         512M     1G     student1-cities-ui.cfapps.io, student1-cities-ui-v2.cfapps.io
+````
+
+You check the application by using the cities-ui-v2 route.
+
+<img src="/images/cities-ui-v2.png" alt="Cities UI" style="width: 100%;"/>
+
+### Step 17
+##### Scaleover traffic from cities-ui to cities-ui V2
+
+Check that both Cities UI applications are running
+
+````bash
+-> cf apps
+Getting apps in org SoCal / space HEB as mborges@pivotal.io...
+OK
+
+name                      requested state   instances   memory   disk   urls
+student1-cities-ui        started           1/1         512M     1G     student1-cities-ui.cfapps.io
+student1-cities-ui-v2     started           1/1         512M     1G     student1-cities-ui.cfapps.io, student1-cities-ui-v2.cfapps.io
+````
+
+Run the scaleover cf CLI command:
+
+````bash
+-> cf scaleover student1-cities-ui student1-cities-ui-v2 30s
+student1-cities-ui (stopped)  >> student1-cities-ui-v2 (started) 
+````
+
+And check again for the application status. You'll notice that the v1 was stopped and v2 is currently running the additional instances from v1.
+
+````bash
+-> cf apps
+Getting apps in org SoCal / space HEB as mborges@pivotal.io...
+OK
+
+name                      requested state   instances   memory   disk   urls
+student1-cities-ui        stopped           0/1         512M     1G     student1-cities-ui.cfapps.io
+student1-cities-ui-v2     started           2/2         512M     1G     student1-cities-ui.cfapps.io, student1-cities-ui-v2.cfapps.io
+````
+
+##### Discussion: Part 4
+
+
+In this part of the workshop did deployment using a blue green script without any downtime. This plugin / methodology can be used in your CD pipeline to build and deploy Cloud Native Apps with zero downtime.
+
+1. Discussion on how do you do Continous Deployment and Delivery with zero downtime today.
+
 <br>
 
 ***

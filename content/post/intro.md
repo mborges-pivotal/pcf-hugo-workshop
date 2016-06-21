@@ -1,19 +1,19 @@
 +++
 Categories = ["agenda","workshop"]
 Tags = ["logistics","speakers"]
-date = "2016-03-15T16:23:23+09:00"
+date = "2016-06-21T16:23:23+09:00"
 title = "Welcome to Pivotal Cloud Native Workshop @ HEB San Antonio"
 type = "Introduction"
 weight = 1
 +++
 ##### Location
 
-HEB Offices (TBD: Get details)
+HEB Offices @ 646 S. Flores Ave
 
 ##### Date and Time
 Date: **June 22 , 2016**
 
-Time: **9:00AM—1:00PM**
+Time: **9:00AM—1:00PM** - Lunch will be provided
 
 Click to get the Agenda, Prerequisites and Setup for the workshop.
 
@@ -67,6 +67,9 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 
 {{< googleslide "https://docs.google.com/presentation/d/1wNT7il4szv25Tl0KBG4SaetQkwKwyqk_rrQfskDSLgo/embed?start=false&loop=false&delayms=3000" >}}
+
+{{< googleslide "https://docs.google.com/presentation/d/1YZnnp580XMTRCyKYWxKjaR_G53yvD46jBwhfsE0mKbQ/embed?start=false&loop=false&delayms=3000" >}}
+
 
 
 #### Videos
