@@ -60,9 +60,9 @@ Learn how to
 Download the Concourse CI server and boot up using vagrant. This step will take some time, you can do this prior to the start of the workshop presentation.
 
 ````bash
-$mkdir ciworkshop && cd ciworkshop // ci workshop working directory
-$vagrant init concourse/lite # creates ./Vagrantfile
-$vagrant up                  # downloads the box and spins up the VM
+$ mkdir ciworkshop && cd ciworkshop // ci workshop working directory
+$ vagrant init concourse/lite # creates ./Vagrantfile
+$ vagrant up                  # downloads the box and spins up the VM
 ````
 The web server will be running at http://192.168.100.4:8080
 
@@ -83,8 +83,8 @@ $ fly -t lite login -c http://192.168.100.4:8080
 We have an existing project `flight-school` in a git repo, which we can clone and use for our first pipeline.
 
 ````
-$git clone https://github.com/rjain-pivotal/flight-school.git
-$cd flight-school\ci
+$ git clone https://github.com/mborges-pivotal/flight-school.git
+$ cd flight-school\ci
 
 ````
 

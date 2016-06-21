@@ -45,8 +45,6 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 3. Download the Cloud Foundry CLI at [PWS Tools](https://console.run.pivotal.io/tools)
 
-4. Download workshop files [here](/files/workshop-files.zip)
-
 
 ##### Setup
 

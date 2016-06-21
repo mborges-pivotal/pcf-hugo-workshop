@@ -21,7 +21,7 @@ Prerequisites
 
 1. Access to Pivotal Cloud Foundry Environment
 
-2. Application binaries
+2. Download workshop files [here](/files/lab1-files.zip)
 
 
 

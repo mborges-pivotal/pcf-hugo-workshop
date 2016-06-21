@@ -15,61 +15,71 @@ To deploy and configure a spring boot app in Docker container and run it in Clou
 
 <!--more-->
 
+##### Prerequisites
 
-This is the repo for a Spring Boot app in Docker
-[Original Repo](https://spring.io/guides/gs/spring-boot-docker/#scratch)
+1. Download workshop files [here](/files/lab2-files.zip)
 
-The Spring boot app is deployed in Cloud Foundry as a Docker Container
+2. Optional: Install [Docker Toolbox](https://www.docker.com/products/docker-toolbox) if you want to run the docker images locally - Step 3.
 
-### 5-Steps
-
-#### Clone the Repo
+3. For this lab we'll use another PCF environment that has docker support enabled. Check which cloud you're target then login to a different cloud. 
 
    ```bash
-     git clone https://github.com/rjain-pivotal/spring-boot-docker-cf.git
-   ```
-#### Build it and Run it locally
+     $ cf target
+     $ cf login -a api.pcf.borgescloud.com --skip-ssl-validation -u <studentX> -p pivotal
 
-   If using Maven
+     -> cf target
+                
+     API endpoint:   https://api.pcf.borgescloud.com (API version: 2.54.0)
+     User:           student1
+     Org:            HEB
+     Space:          User1
+
+   ```
+
+You'll be placed into the HEB org and the UserX space.
+
+#### Step 1 - Run it locally
+
+   This is a very simple hello world Spring boot application packaged as a fatjar. 
 
    ```bash
-     mvn package && java -jar target/gs-spring-boot-docker-0.1.0.jar
+     java -jar target/gs-spring-boot-docker-0.1.0.jar
    ```
 
-   If using Gradle
+#### Step 2 - Review Dockerfile
 
+The Dockerfile simply runs the Spring Boot fatjar.
+
+ ```bash
+     FROM frolvlad/alpine-oraclejdk8:slim
+     VOLUME /tmp
+     ADD gs-spring-boot-docker-0.1.0.jar app.jar
+     RUN sh -c 'touch /app.jar'
+     ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
    ```
-     ./gradlew build && java -jar build/libs/gs-spring-boot-docker-0.1.0.jar
+
+#### Step 3 - Containerize it and run locally - OPTIONAL
+
+This is an optional step. If you have Docker Toolbox installed you can build the image, run it locally and optionally push to a docker hub. 
+
+```bash
+     docker build -t gs-spring-boot-docker .
+     docker tag -f gs-spring-boot-docker mborges/gs-spring-boot-docker
+     docker push mborges/gs-spring-boot-docker
    ```
-
-#### Containerize it
-
-   If using Maven
-
+ 
    ```bash
-      $ mvn package docker:build
-      # Push the Image to Docker
-      $ docker push <docker-user>/gs-spring-boot-docker
-   ```
-
-   If using Gradle
-
-   ```bash
-      $ ./gradlew build buildDocker
-   ```
-
-#### Check and Run
-
-   ```bash
-      $docker images
+      $ docker images
       # Get the Docker Machine VM IP if running on a MAC
-      $docker-machine env default (Get the Machine IP)
-      $docker run -p 8080:8080 -t rjain15/gs-spring-boot-docker
-      $curl http://192.168.99.100:8080  (Use the Machine IP)
+      $ docker-machine env default (Get the Machine IP)
+      $ docker run -p 8080:8080 -t mborges/gs-spring-boot-docker
+      $ curl http://192.168.99.100:8080  (Use the Machine IP)
    ```
 
-#### Run it in Cloud Foundry
+#### Step 4 - Run it in Cloud Foundry
+
+Docker images can be deployed to Pivotal Cloud foundry using the cf push command.
 
    ```bash
-      $cf push -o <docker-user>/gs-spring-boot-docker -c "java -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
+      $cf push -o <docker-user>/gs-spring-boot-docker
    ```
