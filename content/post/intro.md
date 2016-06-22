@@ -58,7 +58,7 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 3. Login to the App Manager Console at
 
-        https://apps.run.pivotal.io
+        https://console.run.pivotal.io
 
 ##### Speakers
 
