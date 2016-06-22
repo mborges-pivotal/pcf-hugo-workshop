@@ -23,15 +23,17 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
         Broad Agenda (We will have breaks in between sessions)
 
-        9:00 - 9:45: Overview of Cloud Native Architecture
+        9:00 - 9:30: Welcome and kick off by Andrea
 
-        9:45 - 10:30: Introduction to Pivotal Cloud Foundry
+        9:30 - 10:15: Overview of Cloud Native Architecture
 
-        10:30 - 10:45 == Break - Check Lab Access ==
+        10:15 - 11:00: Introduction to Pivotal Cloud Foundry
 
-        10:45 - 12:00: Hands on Experience with Pivotal Cloud Foundry (push, bind, scale, monitor) - Lab1
+        11:00 - 11:15 == Break - Check Lab Access ==
 
-        12:00 - 12:30: Lunch and Demo of Lab2 and Lab3
+        11:15 - 12:00: Hands on Experience with Pivotal Cloud Foundry (push, bind, scale, monitor) - Lab1
+
+        12:00 - 12:30: Lunch and Demo of Lab2
 
         12:30 - 13:00: Wrap Up, Q&A, Feedback
 
@@ -64,9 +66,6 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
     Edward Mikuszewski, Platform Architect
 
 #### Presentation
-
-
-{{< googleslide "https://docs.google.com/presentation/d/1wNT7il4szv25Tl0KBG4SaetQkwKwyqk_rrQfskDSLgo/embed?start=false&loop=false&delayms=3000" >}}
 
 {{< googleslide "https://docs.google.com/presentation/d/1YZnnp580XMTRCyKYWxKjaR_G53yvD46jBwhfsE0mKbQ/embed?start=false&loop=false&delayms=3000" >}}
 
