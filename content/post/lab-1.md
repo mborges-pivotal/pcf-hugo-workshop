@@ -120,7 +120,7 @@ The cities-service app requires a database service to store and fetch cities inf
     Navigate to the marketplace and see the available services. Here you will create the service using the CLI.
   ````bash
     $ cf marketplace // check if mysql service is available
-    $ cf cf create-service cleardb spark <studentXX>-cities-db
+    $ cf create-service cleardb spark <studentXX>-cities-db
   ````
 
 3. Launch the DB console via the `Manage` link in the App Manager.  Note the database is empty.
