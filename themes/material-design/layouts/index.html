@@ -10,6 +10,31 @@
           {{ partial "registration.html" .}}
         </div>
       </div>
+      <div class="section">
+        <div class="row">
+              {{ range .Site.Pages}}
+                {{ if in .Params.categories "lab" }}
+                  {{ if in .Params.tags "cf"  }}
+                      {{ partial "labs.html" . }}
+                  {{end}}
+                  {{ if in .Site.Params.tags "spring" }}
+                      {{ partial "spring-labs.html" . }}
+                  {{end}}
+                  {{ if in .Site.Params.tags "node" }}
+                      {{ partial "node-labs.html" . }}
+                  {{end}}
+                  {{ if in .Site.Params.tags "docker" }}
+                      {{ partial "docker-labs.html" . }}
+                  {{end}}
+                  {{ if in .Params.tags "concourse" }}
+                      {{ partial "concourse-labs.html" . }}
+                  {{end}}
+                  {{ if in .Site.Params.tags "apigee" }}
+                      {{ partial "apigee-labs.html" . }}
+                  {{end}}
+                {{end}}
+              {{end}}
+        </div>
     </div>
   </div>
 

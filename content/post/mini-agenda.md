@@ -44,9 +44,9 @@ At the conclusion of this workshop attendees take with them the knowledge and ex
 
 
 #### Speakers
-+ Rajesh Jain - Platform Architect at Pivotal
-+ Marcelo Borges - Platform Architect at Pivotal
 + Patrick Crocker - Platform Architect at Pivotal
++ Ed Mikuszewski - Platform Architect at Pivotal
++ Marcelo Borges - Platform Architect at Pivotal
 
 ---
 
