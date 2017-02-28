@@ -1,4 +1,4 @@
-baseurl = "http://pcf-heb-workshop.cfapps.io/"
+baseurl = "http://pcf-tola-workshop.cfapps.io/"
 languageCode = "en-us"
 title = "Cloud Native Workshop"
 
@@ -9,7 +9,7 @@ theme="material-design"
 MetaDataFormat = "toml"
 paginate = 9 # To specify a multiple of 3
 disqusShortname = "rjain15" # optional
-copyright = "© Copyright 2016 Pivotal Software, Inc. All Rights Reserved. Sitemap"
+copyright = "© Copyright 2016 Pivotal Software, Inc. All Rights Reserved."
 
 #
 # All parameters below here are optional and can be mixed and matched.
@@ -28,9 +28,9 @@ copyright = "© Copyright 2016 Pivotal Software, Inc. All Rights Reserved. Sitem
     # Default (if omitted) is "Home".
     home = "Home"
 
-    description = "Pivotal Cloud Foundry" # optional
+    description = "Detroit · 15 Nov · 8:00AM - 4:00PM" # optional
     twitter = "pivotal" # optional
-    customer = "heb"
+    customer = "tola"
     # headerCover = "images/headerCover.png" # optional
     # footerCover = "images/footerCover.png" # optional
     googleAnalyticsUserID = "UA-75133856-1" # optional

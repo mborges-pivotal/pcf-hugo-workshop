@@ -1,0 +1,6 @@
+{{ $baseurl := .Site.BaseURL }}
+{{ range where .Data.Pages "Type"  "Registration" }}
+  <div class="card-panel hoverable">
+    <p>{{ .Content }}</p>
+  </div>
+{{ end }}

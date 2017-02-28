@@ -19,7 +19,7 @@ deploy:
         password: $CF_PASS
         organization: $CF_ORG
         space: $CF_SPACE
-        appname: pcf-heb-workshop-blue
-        alt_appname: pcf-heb-workshop-green
+        appname: pcf-tola-workshop-blue
+        alt_appname: pcf-tola-workshop-green
         domain: cfapps.io
-        hostname: pcf-heb-workshop
+        hostname: pcf-tola-workshop

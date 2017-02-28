@@ -1,52 +1,45 @@
 +++
 Categories = ["agenda","workshop"]
 Tags = ["logistics","speakers"]
-date = "2016-06-21T16:23:23+09:00"
-title = "Welcome to Pivotal Cloud Native Workshop @ HEB San Antonio"
+date = "2016-03-15T16:23:23+09:00"
+title = "Welcome to the Pivotal Cloud Foundry Workshop@TOLA"
 type = "Introduction"
 weight = 1
 +++
-##### Location
-
-HEB Offices @ 646 S. Flores Ave
 
 ##### Date and Time
-Date: **June 22 , 2016**
+Date: **Nov 15 , 2016**
 
-Time: **9:00AM—1:00PM** - Lunch will be provided
+Time: **8:00AM - 4:00PM**
 
 Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 <!--more-->
 
-##### Agenda
+#### Agenda
+|  |  |
+|------|------|
+| **8:00 AM–9:00 AM** | Registration and Breakfast  |
+| **9:00 AM–10:00 AM** | Cloud Native Architecture & Pivotal Cloud Foundry |    
+| **10:15 AM–12:00 PM** | Hands-On Experience with Pivotal Cloud Foundry  (push, bind, scale, monitor) |
+| **12:00 PM–1:30 PM** | Lunch and Networking  |
+| **1:30 PM–3:30 PM** | CI/CD on Cloud Foundry using Concourse  |
+| **3:30 PM–4:00 PM** | Wrap Up, Q&A, Feedback  |
 
-        Broad Agenda (We will have breaks in between sessions)
-
-        9:00 - 9:30: Welcome and kick off by Andrea
-
-        9:30 - 10:15: Overview of Cloud Native Architecture
-
-        10:15 - 11:00: Introduction to Pivotal Cloud Foundry
-
-        11:00 - 11:15 == Break - Check Lab Access ==
-
-        11:15 - 12:00: Hands on Experience with Pivotal Cloud Foundry (push, bind, scale, monitor) - Lab1
-
-        12:00 - 12:30: Lunch and Demo of Lab2
-
-        12:30 - 13:00: Wrap Up, Q&A, Feedback
-
-        == Labs available - do it at your own pace ==
-
+---
 
 ##### Prerequisites
-1. Sign-up for Pivotal Web Services
+1. Java SDK 1.7+ [Java from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
-2. Go to [Pivotal Web Services - PWS](http://run.pivotal.io/) and click on ‘sign-up’. You’ll need an e-mail address and mobile number.
+          Set the JAVA_HOME variable to the installation dir, in case it is not automatically set
 
-3. Download the Cloud Foundry CLI at [PWS Tools](https://console.run.pivotal.io/tools)
+2. Git CLI for [Windows](https://github.com/git-for-windows/git/releases/download/v2.9.0.windows.1/Git-2.9.0-64-bit.exe)
+   or Git from [github.com](https://desktop.github.com)
 
+3. Cloud Foundry CLI for [Mac](https://github.com/cloudfoundry/cli/releases) or [Windows](http://docs.cloudfoundry.org/devguide/installcf/install-go-cli.html#windows)
+
+4. Curl for [Windows](http://winampplugins.co.uk/curl/)
+   Or for [Mac] (http://pdb.finkproject.org/pdb/package.php/curl)
 
 ##### Setup
 
@@ -54,27 +47,38 @@ Click to get the Agenda, Prerequisites and Setup for the workshop.
 
 2. Check if you are able to use the cf cli to connect to the PCF Workshop Env. Alternatively, you can create a PWS account and check the firewall/connectivity before the Workshop
 
-          cf login -a https://api.run.pivotal.io 
+          cf login -a https://api.run.haas-68.pez.pivotal.io  --skip-ssl-validation
 
-3. Login to the App Manager Console at
+3. Check if you are able to connect to Git repo and download / clone the repo using CLI
+4. Login to the App Manager Console at
+
+        https://apps.pcf2.cloud.fe.pivotal.io
+
+5. Note: Tiles preinstalled in the PCF Workshop environment which we will be using the workshop. You don't need any setup for these tiles.
+
+          ER
+          RabbitMQ
+          MySQL
+          Redis
 
         https://console.run.pivotal.io
 
-##### Speakers
 
-    Marcelo Borges, Platform Architect
-    Edward Mikuszewski, Platform Architect
+#### Speakers
++ Marcelo Borges - Platform Architect at Pivotal
 
 #### Presentation
 
 {{< googleslide "https://docs.google.com/presentation/d/1YZnnp580XMTRCyKYWxKjaR_G53yvD46jBwhfsE0mKbQ/embed?start=false&loop=false&delayms=3000" >}}
 
 
-
 #### Videos
 
 
-{{< youtube V75fE_dxuBQ >}}
+{{< youtube xdw_9dADM-4 >}}
 
 
-{{< youtube 7APZD0me1nU >}}
+#### EBooks
+Beyond the Twelve-Factor App - https://pivotal.io/beyond-the-twelve-factor-app
+Cloud Foundry: The Cloud Native Platform - https://pivotal.io/cloud-foundry-the-cloud-native-platform
+Migrating to Cloud Native Application Architectures - https://pivotal.io/platform/migrating-to-cloud-native-application-architectures-ebook

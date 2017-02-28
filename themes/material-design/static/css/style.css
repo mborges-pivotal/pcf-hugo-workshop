@@ -1,11 +1,91 @@
 /* Custom Stylesheet */
 
+body {
+  background-color: #f9f9f9;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  color: #666666;
+  font-weight: 300;
+}
+
+thead {
+  display:none;
+}
+
+hr {
+  border: 1px solid #eee;
+}
+
+nav {
+  background-color: transparent;
+  height: 64px;
+}
+
+nav ul li a {
+  color: #fff;
+}
+
+#nav-mobile {
+  color: #fff;
+  height: 64px;
+
+}
+.pivotal-logo {
+    background: #026d63;
+    width: 180px;
+    height: 64px;
+    float: left;
+    margin-right: 33px;
+    text-align:center;
+}
+
+.pivotal-logo img {
+  max-width: 128px;
+  padding-top: 15px;
+}
+
+#index-banner {
+  background: url(https://d1fto35gcfffzn.cloudfront.net/images/home/bg-home-golden-gate-pa.jpg) no-repeat top center #0e161a;
+  text-align: center;
+  background-size: cover;
+  padding: 300px 0 160px;
+  position: relative;
+}
+
+
+
+
+
+#index-banner h1, #index-banner h6 {
+  color:#fff;
+}
+
+.header-nav {
+    background-color: #17232a;
+    padding-left:50px;
+    color: #fff;
+}
+
+.container-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 9px 0px 0px #f9f9f9, 0 -9px 0px 0px #f9f9f9, 4px 0 8px -4px #dadada, -4px 0 8px -4px #dadada;
+}
+
+.container {
+  width:auto;
+  padding:20px;
+}
 nav ul a,
 nav .brand-logo {
   color: #444;
 }
 p {
-  line-height: 2rem;
+  line-height: 1.7em;
+  font-size: 15px;
+  font-family: "Proxima Nova", sans-serif;
 }
 
 .button-collapse {
@@ -45,4 +125,12 @@ p {
 
 footer.page-footer {
   margin: 0;
+  padding: 0;
+  background-color: #081016;
+}
+
+.footer-copyright, .footer-copyright a {
+    padding: 0;
+    color: #446173 !important;
+    background-color: transparent !important;
 }
